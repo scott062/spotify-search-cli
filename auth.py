@@ -20,7 +20,8 @@ def authenticate():
         token = res.json().get("access_token")
         write_token(token)
         return read_token()
-    return res.raise_for_status()
+    else:
+        return res.raise_for_status()
 
 def write_token(token):
     with open("token.txt", "w") as f:
