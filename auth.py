@@ -2,34 +2,38 @@ import requests
 import os
 from requests.auth import HTTPBasicAuth
 from dotenv import load_dotenv
+from constants import API_TOKEN
 
 
-def authenticate():
-    load_dotenv()
+class RequestsSession:
+    def __init__(self):
+        self.token = None
+        self.session = requests.Session()
+        if not self.token:
+            self.token = self.__get_token__()
+        self.session.headers.update({"Authorization": f"Bearer {self.token}", "accept": "application/json"})
 
-    CLIENT_ID = os.getenv("CLIENT_ID")
-    CLIENT_SECRET = os.getenv("CLIENT_SECRET")
+    def get(self, url, **kwargs):
+        return self.session.get(url, **kwargs)
 
-    url = "https://accounts.spotify.com/api/token"
-    payload = {"grant_type": "client_credentials"}
-    headers = {"Content-Type" : "application/x-www-form-urlencoded"}
+    def post(self, url, data=None, json=None, **kwargs):
+        return self.session.post(url, data=data, json=json, **kwargs)
 
-    res = requests.post(url, data=payload, auth=HTTPBasicAuth(CLIENT_ID, CLIENT_SECRET), headers=headers)
+    def __get_token__(self):
+        load_dotenv()
 
-    if res.ok:
-        token = res.json().get("access_token")
-        write_token(token)
-        return read_token()
-    else:
-        return res.raise_for_status()
+        CLIENT_ID = os.getenv("CLIENT_ID")
+        CLIENT_SECRET = os.getenv("CLIENT_SECRET")
 
-def write_token(token):
-    with open("token.txt", "w") as f:
-        f.write(token)
+        payload = {"grant_type": "client_credentials"}
+        headers = {"Content-Type" : "application/x-www-form-urlencoded"}
 
-def read_token():
-    with open("token.txt", "r") as f:
-        content = f.read()
-        return content
+        try:
+            # Not using the session yet, using vanilla requests to get initial token
+            res = requests.post(API_TOKEN, data=payload, auth=HTTPBasicAuth(CLIENT_ID, CLIENT_SECRET), headers=headers)
+            res.raise_for_status()
+            return res.json().get("access_token")
+        except Exception as e:
+            print(f"Error loading token: {e}")
 
 
