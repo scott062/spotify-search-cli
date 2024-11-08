@@ -48,9 +48,10 @@ class SpotifyCLI(cmd.Cmd):
         _res = res.get("artists").get("items")
 
         fields_to_return = {
-            "name",
-            "popularity",
-            "genres"
+            "id": None,
+            "name": None,
+            "popularity": None,
+            "genres": None
         }
         print(json.dumps(list(filter_json_data(_res, fields_to_return)), indent=4))
 
@@ -68,9 +69,14 @@ class SpotifyCLI(cmd.Cmd):
         _res = res.get("albums").get("items")
 
         fields_to_return = {
-            "name",
-            "release_date",
-            "total_tracks"
+            "id": None,
+            "name": None,
+            "release_date": None,
+            "popularity": None,
+            "total_tracks": None,
+            "artists": {
+                "name": None
+            }
         }
         print(json.dumps(list(filter_json_data(_res, fields_to_return)), indent=4))
 
@@ -88,6 +94,7 @@ class SpotifyCLI(cmd.Cmd):
         _res = res.get("tracks").get("items")
 
         fields_to_return = {
+            "id": None,
             "name": None,
             "album": {
                 "name": None
@@ -113,9 +120,9 @@ class SpotifyCLI(cmd.Cmd):
         _res = res.get("playlists").get("items")
 
         fields_to_return = {
-            "name",
-            "popularity",
-            "genres"
+            "id": None,
+            "name": None,
+            "description": None
         }
         print(json.dumps(list(filter_json_data(_res, fields_to_return)), indent=4))
 
