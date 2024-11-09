@@ -112,8 +112,3 @@ Hello world
 >> quit
 Exiting Scotty's Spotify CLI
 ```
-
-
-## License
-
-This CLI is intended for educational and personal use.
